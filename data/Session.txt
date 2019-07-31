@@ -4,5 +4,17 @@
     "session_id": "2j54d2gg3geejjs5",
     "user_id": 0,
     "expired_time": 1562217518.2532873
+  },
+  {
+    "id": 1,
+    "session_id": "s24j2s25jj33j5b5",
+    "user_id": 1,
+    "expired_time": 1564547089.183199
+  },
+  {
+    "id": 2,
+    "session_id": "gjbgekke2ljbkbke",
+    "user_id": 1,
+    "expired_time": 1564547163.7468855
   }
 ]

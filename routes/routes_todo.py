@@ -19,7 +19,7 @@ def same_user_required(route_function):
             todo_id = request.query['id']
         else:
             todo_id = request.form()['id']
-        t = Todo.find_by(id=int(todo_id))
+        t = Todo.one(id=int(todo_id))
 
         if t.user_id == u.id:
             return route_function(request)
@@ -35,7 +35,7 @@ def index(request):
     todo 首页的路由函数
     """
     u = current_user(request)
-    todos = Todo.find_all(user_id=u.id)
+    todos = Todo.all (user_id=u.id)
 
     return html_response('todo_index.html', todos=todos)
 
@@ -70,7 +70,7 @@ def edit(request):
     编辑 todo
     """
     todo_id = int(request.query['id'])
-    t = Todo.find_by(id=todo_id)
+    t = Todo.one(id=todo_id)
     return html_response('todo_edit.html', todo=t)
 
 
@@ -81,7 +81,9 @@ def update(request):
     更新 todo
     """
     form = request.form()
-    Todo.update(form)
+    user_id = int(form['id'])
+    form = request.form()
+    Todo.update(user_id, **form)
 
     return redirect('/todo/index')
 

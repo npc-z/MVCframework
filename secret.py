@@ -1,0 +1,1 @@
+mysql_password = 'put your mysql database password here'

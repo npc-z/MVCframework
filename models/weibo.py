@@ -1,35 +1,44 @@
-from models import Model
+from models.base_model import SQLModel
 from models.user import User
 from models.comment import Comment
+from utils import log
 
 
-class Weibo(Model):
+class Weibo(SQLModel):
     """
     微博类
     """
+    sql_create = '''
+    CREATE TABLE `weibo` (
+        `id`       INT NOT NULL AUTO_INCREMENT,
+        `content`  varchar(255) NOT NULL,
+        `user_id`  INT NOT NULL,
+        PRIMARY KEY (`id`)
+    );
+    '''
+
     def __init__(self, form):
         super().__init__(form)
         self.content = form.get('content', '')
-        self.user_id = form.get('user_id', None)
+        self.user_id = form.get('user_id', -1)
 
     @classmethod
     def add(cls, form, user_id):
-        w = Weibo(form)
-        w.user_id = user_id
-        w.save()
+        form['user_id'] = int(user_id)
+        Weibo.new(form)
 
     @classmethod
-    def update(cls, form):
-        weibo_id = int(form['id'])
-        w = Weibo.find_by(id=weibo_id)
-        w.content = form['content']
-        w.save()
+    def update(cls, weibo_id, **kwargs):
+        weibo_id = int(weibo_id)
+        log('weibo, update, kwargs,', kwargs)
+        kwargs.pop('id')
+        super().update(weibo_id, **kwargs)
 
     def comments(self):
-        cs = Comment.find_all(weibo_id=self.id)
+        cs = Comment.all(weibo_id=self.id)
         return cs
 
     def username(self):
         user_id = int(self.user_id)
-        u = User.find_by(id=user_id)
+        u = User.one(id=user_id)
         return u.username

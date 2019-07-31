@@ -9,6 +9,9 @@ class UserRole(Enum):
     guest = auto()
     normal = auto()
 
+    def translate(self, _escape_table):
+        return self.name
+
 
 class Encoder(json.JSONEncoder):
     prefix = "__enum__"

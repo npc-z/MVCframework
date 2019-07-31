@@ -16,11 +16,13 @@ def weibo_owner_required(route_function):
     def f(request):
         log('weibo_owner_required')
         u = current_user(request)
-        if 'id' in request.query:
-            weibo_id = request.query['id']
-        else:
+        method = request.method
+        if method == 'POST':
             weibo_id = request.form()['id']
-        w = Weibo.find_by(id=int(weibo_id))
+        else:
+            weibo_id = request.query['id']
+        log('*** weibo_owner_required *** weibo_id <{}>'.format(weibo_id))
+        w = Weibo.one(id=int(weibo_id))
 
         if w.user_id == u.id:
             return route_function(request)
@@ -38,7 +40,7 @@ def comment_owner_required(route_function):
             comment_id = request.query['id']
         else:
             comment_id = request.form()['id']
-        c = Comment.find_by(id=int(comment_id))
+        c = Comment.one(id=int(comment_id))
 
         if c.user_id == u.id:
             return route_function(request)
@@ -58,8 +60,8 @@ def comment_owner_or_weibo_owner_required(route_function):
             comment_id = request.query['id']
         else:
             comment_id = request.form()['id']
-        c = Comment.find_by(id=int(comment_id))
-        w = Weibo.find_by(id=c.weibo_id)
+        c = Comment.one(id=int(comment_id))
+        w = Weibo.one(id=c.weibo_id)
 
         if u.id == c.user_id or u.id == w.user_id:
             return route_function(request)
@@ -75,7 +77,7 @@ def index(request):
     """
     if 'id' in request.query:
         user_id = int(request.query['id'])
-        u = User.find_by(id=user_id)
+        u = User.one(id=user_id)
     else:
         u = current_user(request)
 
@@ -103,9 +105,9 @@ def delete(request):
     weibo_id = int(request.query['id'])
     Weibo.delete(weibo_id)
     # 删除微博对应的所有评论
-    cs = Comment.find_all(weibo_id=weibo_id)
+    cs = Comment.all(weibo_id=weibo_id)
     for c in cs:
-        c.delete()
+        c.delete(c.id)
     return redirect('/weibo/index')
 
 
@@ -113,7 +115,7 @@ def delete(request):
 @login_required
 def edit(request):
     weibo_id = int(request.query['id'])
-    w = Weibo.find_by(id=weibo_id)
+    w = Weibo.one(id=weibo_id)
     return html_response('weibo_edit.html', weibo=w)
 
 
@@ -124,8 +126,8 @@ def update(request):
     更新 weibo
     """
     form = request.form()
-    Weibo.update(form)
-
+    weibo_id = int(form['id'])
+    Weibo.update(weibo_id, **form)
     return redirect('/weibo/index')
 
 
@@ -136,13 +138,8 @@ def comment_add(request):
     """
     u = current_user(request)
     form = request.form()
-    weibo_id = int(form['weibo_id'])
-
-    weibo = Weibo.find_by(id=weibo_id)
     c = Comment(form)
-    c.user_id = u.id
-    c.weibo_id = weibo.id
-    c.save()
+    c.add(u.id)
 
     log('comment add', c, u, form)
     return redirect('/weibo/index')
@@ -163,7 +160,7 @@ def comment_delete(request):
 @login_required
 def comment_edit(request):
     comment_id = int(request.query['id'])
-    c = Comment.find_by(id=comment_id)
+    c = Comment.one(id=comment_id)
     log('in the comment_edit', c)
     return html_response('comment_edit.html', comment=c)
 
@@ -172,15 +169,8 @@ def comment_edit(request):
 @login_required
 def comment_update(request):
     form = request.form()
-    content = form['content']
     comment_id = int(form['id'])
-    c = Comment.find_by(id=comment_id)
-
-    # 直接更新评论
-    c.content = content
-    c.save()
-
-    # 重定向到用户的主页
+    Comment.update(comment_id, **form)
     return redirect('/weibo/index')
 
 

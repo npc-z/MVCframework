@@ -1,6 +1,7 @@
 import socket
 import _thread
 
+from models.base_model import SQLModel
 from request import Request
 from utils import log
 
@@ -60,6 +61,8 @@ def run(host, port):
     """
     启动服务器
     """
+    # 初始化 ORM
+    SQLModel.init_db()
     # 初始化 socket 套路
     # 使用 with 可以保证程序中断的时候正确关闭 socket 释放占用的端口
     log('开始运行于', 'http://{}:{}'.format(host, port))
