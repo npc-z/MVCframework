@@ -16,6 +16,15 @@
 - 内含 待办清单 应用, 用户可添加/修改/删除待办项
 - 内含 简易weibo 应用, 用户可发布/删除感想, 其他用户添加/删除评论
 
+## 远行项目
+- Python 版本 `Python 3.6`
+- 安装依赖 `pip install -r requirements.txt`
+- 在 `config.py` 中配置数据库名
+- 在 `secret.py` 中配置书库连接密码
+- 执行 `python reset.py` 创建数据库
+- 执行 `python server.py` 启动服务器
+
+
 
 ## 简单演示
 
