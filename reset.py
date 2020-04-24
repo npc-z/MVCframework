@@ -116,12 +116,12 @@ def test_user():
         password='123',
         role=UserRole.normal,
     )
-    u = User.new(**form)
+    u = User.new(form)
     log('test user add u, ', u)
 
 
 def test_data():
-    SQLModel.init_db()
+    # SQLModel.init_db()
 
     # Test.new({})
 
@@ -176,5 +176,6 @@ def test_data():
 
 if __name__ == '__main__':
     recreate_database()
+    SQLModel.init_db()
     test_user()
     test_data()
