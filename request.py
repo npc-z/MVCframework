@@ -32,8 +32,9 @@ class Request(object):
 
         if 'Cookie' in self.headers:
             cookies = self.headers['Cookie']
-            k, v = cookies.split('=')
-            self.cookies[k] = v
+            for pair in cookies.split('; '):
+                k, v = pair.split('=')
+                self.cookies[k] = v
 
     def form(self):
         body = urllib.parse.unquote_plus(self.body)
