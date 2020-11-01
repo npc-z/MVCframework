@@ -1,5 +1,7 @@
 # MVC 框架
 
+https://visitor-badge.vercel.app/page/MVCframework?color=blue
+
 ## 简介
 
 用 python 基于 socket 实现的 MVC web 框架
