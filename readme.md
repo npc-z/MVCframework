@@ -1,6 +1,7 @@
 # MVC 框架
 
-https://visitor-badge.vercel.app/page/MVCframework?color=blue
+[![visitors](https://visitor-badge.vercel.app/p/MVCframework?color=brightgreen)](https://github.com/WangNingkai/MVCframework)
+
 
 ## 简介
 
