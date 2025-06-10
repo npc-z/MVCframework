@@ -3,5 +3,5 @@ cryptography==41.0.3
 Jinja2==2.11.3
 MarkupSafe==1.1.1
 pycparser==2.20
-PyMySQL==0.9.3
+PyMySQL==1.1.1
 six==1.14.0
